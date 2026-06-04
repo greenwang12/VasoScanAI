@@ -1,0 +1,121 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html,
+body,
+#root{
+  width:100%;
+  min-height:100vh;
+}
+
+body{
+  font-family: Inter, sans-serif;
+  background:#F8FAFC;
+  color:#0F172A;
+}
+
+::selection{
+  background:#14B8A6;
+  color:white;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar{
+  width:8px;
+}
+
+::-webkit-scrollbar-track{
+  background:#E2E8F0;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#14B8A6;
+  border-radius:10px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:#0D9488;
+}
+
+/* Glass Effect */
+
+.glass{
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.6);
+  box-shadow:
+    0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* Heart Glow */
+
+.heart-glow{
+  filter:
+    drop-shadow(0 0 20px rgba(20,184,166,.25))
+    drop-shadow(0 0 40px rgba(20,184,166,.15));
+}
+
+/* Soft Floating Animation */
+
+@keyframes float{
+  0%{
+    transform:translateY(0px);
+  }
+
+  50%{
+    transform:translateY(-12px);
+  }
+
+  100%{
+    transform:translateY(0px);
+  }
+}
+
+.float{
+  animation:float 5s ease-in-out infinite;
+}
+
+/* ECG Animation */
+
+@keyframes ecgMove{
+  from{
+    stroke-dashoffset:1000;
+  }
+
+  to{
+    stroke-dashoffset:0;
+  }
+}
+
+.ecg-path{
+  stroke-dasharray:1000;
+  animation:ecgMove 8s linear infinite;
+}
+
+/* Card Hover */
+
+.card-hover{
+  transition:all .3s ease;
+}
+
+.card-hover:hover{
+  transform:translateY(-5px);
+  box-shadow:
+    0 20px 40px rgba(20,184,166,.12);
+}
+
+/* Medical Gradient */
+
+.medical-gradient{
+  background:
+  linear-gradient(
+    135deg,
+    #14B8A6,
+    #06B6D4
+  );
+}
