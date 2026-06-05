@@ -1,53 +1,140 @@
-<<<<<<< HEAD
 @import "tailwindcss";
 
-body {
-  margin: 0;
-  font-family: Inter, sans-serif;
-  background: #f8fafc;
-=======
-body {
-  margin: 0;
-  font-family: "Poppins", sans-serif;
-  background: radial-gradient(circle at top, #0f2027, #000);
-  color: white;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-.splash-container {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 1.5s ease-in;
+html{
+  scroll-behavior:smooth;
 }
 
-.splash-logo {
-  width: 140px;
-  animation: pulse 2s infinite;
+html,
+body,
+#root{
+  width:100%;
+  min-height:100vh;
 }
 
-.splash-title {
-  font-size: 3rem;
-  margin-top: 1rem;
-  background: linear-gradient(90deg, #00e5ff, #00bcd4);
-  -webkit-background-clip: text;
-  color: transparent;
+body{
+  font-family:Inter,sans-serif;
+  background:#F8FAFC;
+  color:#0F172A;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
-.splash-subtitle {
-  opacity: 0.8;
-  letter-spacing: 1px;
+img{
+  max-width:100%;
+  display:block;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-  100% { transform: scale(1); }
+button,
+input,
+textarea,
+select{
+  font:inherit;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
->>>>>>> ceca07c140c6bfe71ffdce4bb1c6c95a2ca44c40
+::selection{
+  background:#14B8A6;
+  color:white;
+}
+
+/* Scrollbar */
+
+::-webkit-scrollbar{
+  width:8px;
+}
+
+::-webkit-scrollbar-track{
+  background:#E2E8F0;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#14B8A6;
+  border-radius:10px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:#0D9488;
+}
+
+/* Glass Effect */
+
+.glass{
+  background:rgba(255,255,255,0.75);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.6);
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* Heart Glow */
+
+.heart-glow{
+  filter:
+    drop-shadow(0 0 20px rgba(16,185,129,.25))
+    drop-shadow(0 0 40px rgba(16,185,129,.15));
+}
+
+/* Floating Animation */
+
+@keyframes float{
+  0%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-12px);
+  }
+
+  100%{
+    transform:translateY(0);
+  }
+}
+
+.float{
+  animation:float 5s ease-in-out infinite;
+}
+
+/* ECG Animation */
+
+@keyframes ecgMove{
+  from{
+    stroke-dashoffset:1000;
+  }
+
+  to{
+    stroke-dashoffset:0;
+  }
+}
+
+.ecg-path{
+  stroke-dasharray:1000;
+  animation:ecgMove 8s linear infinite;
+}
+
+/* Card Hover */
+
+.card-hover{
+  transition:all .3s ease;
+}
+
+.card-hover:hover{
+  transform:translateY(-5px);
+  box-shadow:
+    0 20px 40px rgba(16,185,129,.12);
+}
+
+/* Medical Gradient */
+
+.medical-gradient{
+  background:linear-gradient(
+    135deg,
+    #10B981,
+    #14B8A6
+  );
 }

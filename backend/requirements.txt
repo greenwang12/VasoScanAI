@@ -1,25 +1,7 @@
 fastapi
-uvicorn[standard]
-
-# Database
-sqlalchemy
-pymysql
-
-# Environment variables
-python-dotenv
-
-# Machine Learning
+uvicorn
 numpy
+pandas
 scikit-learn
 joblib
-
-# Video & Signal Processing
-opencv-python
-scipy
-
-# Authentication & Security
-passlib[bcrypt]
-python-jose
-
-# Utilities
 python-multipart
