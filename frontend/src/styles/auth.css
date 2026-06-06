@@ -51,16 +51,21 @@ body{
 }
 
 .logo-box{
-  width:52px;
-  height:52px;
+  width:72px;
+  height:72px;
 
-  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
-  background:linear-gradient(
-    135deg,
-    #b7f3d6,
-    #86efac
-  );
+  flex-shrink:0;
+}
+
+.logo-img{
+  width:100%;
+  height:100%;
+
+  object-fit:contain;
 }
 
 .logo-section h1{
@@ -117,13 +122,13 @@ body{
 
 .hero-badge{
   display:inline-block;
+  margin: top -2px;
 
   padding:12px 24px;
 
   border-radius:999px;
 
   background:#f0fdf4;
-
   border:1px solid #bbf7d0;
 
   color:#15803d;

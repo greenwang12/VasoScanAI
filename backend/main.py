@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -11,6 +11,7 @@ from video_processor import extract_signal
 from database import SessionLocal, engine
 from models import Base, ScanHistory
 from explainable_ai import get_explanation
+from ai_insights import generate_ai_insights
 
 import numpy as np
 import shutil
@@ -81,6 +82,7 @@ def predict(data: PredictionRequest):
             heart_rate = random.randint(65, 85)
 
         explanation = get_explanation(rf)
+        insights = generate_ai_insights(explanation)
 
         summary = generate_summary(
             prediction,
@@ -112,6 +114,7 @@ def predict(data: PredictionRequest):
             "risk_score": risk_score,
             "summary": summary,
             "explanation": explanation,
+            "insights": insights,
             "timestamp": scan.timestamp
         }
 
@@ -124,8 +127,12 @@ def predict(data: PredictionRequest):
 
     finally:
         db.close()
+
 @app.post("/analyze-video")
-async def analyze_video(file: UploadFile = File(...)):
+async def analyze_video(
+    file: UploadFile = File(...),
+    user_id: int = Form(...)
+):
 
     db = SessionLocal()
 
@@ -174,6 +181,7 @@ async def analyze_video(file: UploadFile = File(...)):
             heart_rate = random.randint(65, 85)
 
         explanation = get_explanation(rf)
+        insights = generate_ai_insights(explanation)
 
         summary = generate_summary(
             prediction,
@@ -183,6 +191,7 @@ async def analyze_video(file: UploadFile = File(...)):
         )
 
         scan = ScanHistory(
+            user_id=user_id,
             filename=file.filename,
             prediction=prediction,
             confidence=confidence,
@@ -196,18 +205,23 @@ async def analyze_video(file: UploadFile = File(...)):
         db.refresh(scan)
 
         return {
+            "success": True,
             "id": scan.id,
+            "user_id": user_id,
             "prediction": prediction,
             "confidence": confidence,
             "heart_rate": heart_rate,
             "risk_score": risk_score,
             "summary": summary,
-            "explanation": explanation
+            "explanation": explanation,
+            "insights": insights,
+            "waveform": signal[:300].tolist()
         }
 
     except Exception as e:
 
         return {
+            "success": False,
             "error": str(e)
         }
 
@@ -223,6 +237,39 @@ def history():
 
         scans = (
             db.query(ScanHistory)
+            .order_by(
+                ScanHistory.timestamp.desc()
+            )
+            .all()
+        )
+
+        return [
+            {
+                "id": scan.id,
+                "filename": scan.filename,
+                "prediction": scan.prediction,
+                "confidence": scan.confidence,
+                "heart_rate": scan.heart_rate,
+                "risk_score": scan.risk_score,
+                "summary": scan.summary,
+                "timestamp": scan.timestamp
+            }
+            for scan in scans
+        ]
+
+    finally:
+        db.close()
+
+@app.get("/history/{user_id}")
+def user_history(user_id: int):
+
+    db = SessionLocal()
+
+    try:
+
+        scans = (
+            db.query(ScanHistory)
+            .filter(ScanHistory.user_id == user_id)
             .order_by(
                 ScanHistory.timestamp.desc()
             )
@@ -267,6 +314,7 @@ def latest():
             }
 
         explanation = get_explanation(rf)
+        insights = generate_ai_insights(explanation)
 
         return {
             "id": scan.id,
@@ -277,6 +325,7 @@ def latest():
             "risk_score": scan.risk_score,
             "summary": scan.summary,
             "explanation": explanation,
+            "insights": insights,
             "timestamp": scan.timestamp
         }
 

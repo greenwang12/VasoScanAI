@@ -1,6 +1,7 @@
 import "../styles/auth.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import logo from "../assets/vasoscan-logo.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -25,32 +26,42 @@ export default function Login() {
       });
 
       const data = await res.json();
+console.log("LOGIN RESPONSE:", data);
 
-      if (!res.ok) {
-        setError(data.detail || "Login failed");
-        return;
-      }
+if (data.success) {
+  localStorage.setItem("user", JSON.stringify(data));
+  localStorage.setItem("user_id", data.user_id);
 
-      localStorage.setItem("user", JSON.stringify(data));
-
-      navigate("/dashboard");
-    } catch (err) {
-      setError("Backend not reachable");
-    }
+  navigate("/dashboard");
+} else {
+  setError(data.message);
+}
+    } catch {
+  setError("Backend not reachable");
+}
   };
 
   return (
     <div className="landing-page">
       {/* NAVBAR */}
       <nav className="navbar">
-        <div className="logo-section">
-          <div className="logo-box"></div>
 
-          <div>
-            <h1>VASOSCAN</h1>
-            <p>AI Cardiovascular Intelligence</p>
-          </div>
-        </div>
+<div className="logo-section">
+
+  <div className="logo-box">
+    <img
+      src={logo}
+      alt="VasoScan Logo"
+      className="logo-img"
+    />
+  </div>
+
+  <div>
+    <h1>VASOSCAN</h1>
+    <p>AI Cardiovascular Intelligence</p>
+  </div>
+
+</div>
 
         <div className="nav-links">
           <a href="#">Technology</a>

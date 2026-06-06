@@ -1,5 +1,15 @@
 import "../styles/scan.css";
 import { useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip
+} from "recharts";
+
 
 export default function Scan() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -26,10 +36,16 @@ export default function Scan() {
 
     const formData = new FormData();
     formData.append("file", selectedFile);
+    formData.append("user_id", localStorage.getItem("user_id"));
 
     setScanning(true);
 
     try {
+      console.log("user_id =", localStorage.getItem("user_id"));
+
+for (const pair of formData.entries()) {
+  console.log(pair[0], pair[1]);
+}
       const res = await fetch(
         "http://127.0.0.1:8000/analyze-video",
         {
@@ -39,6 +55,8 @@ export default function Scan() {
       );
 
       const data = await res.json();
+
+console.log("FULL RESPONSE:", data);
 
       if (data.error) {
         alert(data.error);
@@ -53,6 +71,12 @@ export default function Scan() {
       setScanning(false);
     }
   };
+
+ const waveformData =
+  result?.waveform?.map((value, index) => ({
+    index,
+    value
+  })) || [];
 
   return (
     <div className="scan-page">
@@ -124,7 +148,15 @@ export default function Scan() {
 
             <div className="metric-card">
               <h4>Prediction</h4>
-              <h2>{result.prediction}</h2>
+              <h2
+  className={
+    result.prediction === "MI"
+      ? "metric-value-mi"
+      : "metric-value-normal"
+  }
+>
+  {result.prediction}
+</h2>
             </div>
 
             <div className="metric-card">
@@ -148,15 +180,41 @@ export default function Scan() {
 
           <section className="scan-card">
 
-            <h2>Waveform Analysis</h2>
+  <h2>Waveform Analysis</h2>
 
-            <p>
-              Extracted vPPG waveform and signal
-              analytics will appear here once
-              waveform visualization is connected.
-            </p>
+  <div className="waveform-chart">
 
-          </section>
+    <ResponsiveContainer
+      width="100%"
+      height={300}
+    >
+
+      <LineChart data={waveformData}>
+
+        <XAxis
+          dataKey="index"
+          hide
+        />
+
+        <YAxis hide />
+
+        <Tooltip />
+
+        <Line
+          type="monotone"
+          dataKey="value"
+          stroke="#10b981"
+          strokeWidth={3}
+          dot={false}
+        />
+
+      </LineChart>
+
+    </ResponsiveContainer>
+
+  </div>
+
+</section>
 
           {/* Explainable AI */}
 
@@ -195,15 +253,48 @@ export default function Scan() {
 
 </section>
 
+<section className="scan-card">
+
+  <h2>AI Insights</h2>
+
+  {result.insights?.map((item, index) => (
+
+    <div
+      key={index}
+      className="insight-card"
+    >
+
+      <div className="insight-header">
+
+        <h3>{item.feature}</h3>
+
+        <span className={`impact ${item.impact.toLowerCase()}`}>
+          {item.impact} Impact
+        </span>
+
+      </div>
+
+      <p>{item.description}</p>
+
+    </div>
+
+  ))}
+
+</section>
+
           {/* LLM Summary */}
 
-          <section className="scan-card">
+         <section className="scan-card">
 
-            <h2>AI Health Report</h2>
+  <h2>AI Health Report</h2>
 
-            <p>{result.summary}</p>
+  <div className="report-content">
+    <ReactMarkdown>
+      {result.summary}
+    </ReactMarkdown>
+  </div>
 
-          </section>
+</section>
         </>
       )}
     </div>
